@@ -1,5 +1,3 @@
-# remote-rover
-
 #Overview:
 
 The goal of this project is to a control an Arduino-based rover through an obstacle course with ROS by user input (Leap Motion, Joystick, keyboard, etc.) remotely by using robot web tools.
