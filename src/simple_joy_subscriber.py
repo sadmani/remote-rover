@@ -3,25 +3,32 @@ import roslib
 import rospy
 from std_msgs.msg import Float64
 from sensor_msgs.msg import Joy
-output = Joy()
+from geometry_msgs.msg import Twist,Vector3
+from math import sqrt
 
+output = Joy()
+mvt = Twist()
+lin_vel = Vector3()
 
 def callback(data):
-#	rospy.loginfo(rospy.get_caller_id() + "I heard the info")
-	pubJoy = rospy.Publisher('joy_control',Float64)
-	
-	fr_msg = data.axes[1]
-#	forward = data.axes[0]
-#	backward = data.axes[1]
-#	pubJoy.publish(fr_msg)
-	if fr_msg > 0:
-		forward = fr_msg*255
-		pubJoy.publish(forward)
-	if fr_msg < 0:
-		backward = fr_msg*-255
-		pubJoy.publish(backward)
-	#print("Data axes 0: ",output1)
-	#print("Data axes 1: ",output2)
+	# pubPWM = rospy.Publisher('mvt_PWM',Float64)
+	# pubDir = rospy.Publisher('mvt_direction',Float64)
+	pubTwist = rospy.Publisher('twist_rover',Twist)
+	# lr_msg = data.axes[0]
+	# fb_msg = data.axes[1]
+
+	lin_vel.x = data.axes[1]
+	lin_vel.y = data.axes[0]
+	lin_vel.z = 0
+
+	if lin_vel.x != 0 and lin_vel.y != 0:
+		wz = 1
+	else:
+		wz = 0
+
+	mvt = Twist(lin_vel,Vector3(0,0,wz))
+	#print('mvt twist: ', mvt)
+	pubTwist.publish(mvt)
 
 def listener():
 	rospy.init_node('listener', anonymous = True)
