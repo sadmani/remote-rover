@@ -12,9 +12,11 @@ int motorRA = 10;
 ros::NodeHandle  nh;
 
 std_msgs::String str_msg;
+std_msgs::Float64 blah_msg;
 geometry_msgs::Twist twist_msg;
 
-ros::Publisher chatter("move_state", &twist_msg);
+
+ros::Publisher chatter("move_state", &blah_msg);
 
 void moveWheels( const geometry_msgs::Twist&msg){
   float vel_x = msg.linear.x;
@@ -24,14 +26,13 @@ void moveWheels( const geometry_msgs::Twist&msg){
   float adj_vel_x = 120*vel_x + 120;
   float adj_vel_y = 120*vel_y + 120;
   
-  analogWrite(motorRA, 255);
-  analogWrite(motorRB, 255);
-  analogWrite(motorLA, 255);
-  analogWrite(motorLB, 255);
-  delay(500);
-  
-  twist_msg = msg;
-  chatter.publish(&twist_msg);
+//  analogWrite(motorRA, 255);
+//  analogWrite(motorRB, 255);
+//  analogWrite(motorLA, 255);
+//  analogWrite(motorLB, 255);
+//  delay(500);
+  blah_msg.data = vel_x;
+  chatter.publish(&blah_msg);
   
   if (ang_z == 0.0){
     if (adj_vel_x == 0.0){
@@ -93,5 +94,5 @@ void setup(){
 
 void loop(){
   nh.spinOnce();
-  delay(1000);
+  delay(500);
 }
