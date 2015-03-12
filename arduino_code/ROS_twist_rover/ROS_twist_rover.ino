@@ -23,14 +23,14 @@ void moveWheels( const geometry_msgs::Twist&msg){
   float vel_y = msg.linear.y;
   float ang_z = msg.angular.z;
   
-  float adj_vel_x = 120*vel_x + 120;
-  float adj_vel_y = 120*vel_y + 120;
+  float adj_vel_x = 255*vel_x;
+  float adj_vel_y = 255*vel_y;
   
 //  analogWrite(motorRA, 255);
-//  analogWrite(motorRB, 255);
+//  analogWrite(motorRB, 0);
 //  analogWrite(motorLA, 255);
-//  analogWrite(motorLB, 255);
-//  delay(500);
+//  analogWrite(motorLB, 0);
+  //delay(500);
   blah_msg.data = vel_x;
   chatter.publish(&blah_msg);
   
@@ -78,7 +78,8 @@ void moveWheels( const geometry_msgs::Twist&msg){
   }
 } 
 
-ros::Subscriber<geometry_msgs::Twist>sub4("twist_rover",&moveWheels);
+//ros::Subscriber<geometry_msgs::Twist>sub4("twist_rover",&moveWheels);
+ros::Subscriber<geometry_msgs::Twist>sub4("buffered_twist",&moveWheels);
 
 void setup(){
   pinMode(motorLB, OUTPUT);
@@ -86,7 +87,7 @@ void setup(){
   pinMode(motorLA, OUTPUT);
   pinMode(motorRA, OUTPUT);
   
-  nh.getHardware()->setBaud(9600);
+  nh.getHardware()->setBaud(57600);
   nh.initNode();
   nh.advertise(chatter);
   nh.subscribe(sub4);
@@ -94,5 +95,5 @@ void setup(){
 
 void loop(){
   nh.spinOnce();
-  delay(500);
+  delay(50);
 }
