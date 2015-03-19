@@ -1,0 +1,27 @@
+<launch>
+
+ <!-- rosserial node -->
+  <node pkg="rosserial_python" type="serial_node.py" name="serial_node" output="screen">
+        <param name="~port" value="/dev/ttyACM1" />
+        <param name="~baud" value="57600" />
+  </node>
+
+ <!-- joy node -->
+  <node respawn="true" pkg="joy"
+        type="joy_node" name="raw_joy" >
+    <param name="dev" type="string" value="/dev/input/js0" />
+    <param name="deadzone" value="0.12" />
+  </node>
+
+ <!-- image view node -->
+  <node name="image_view" pkg="image_view" type="image_view" respawn="false" output="screen">
+    <remap from="image" to="/robot_vision"/>
+    <param name="autosize" value="true" />
+  </node>
+
+ <!-- rover node -->
+	<node name="rover_eyes" pkg="leaping_rover" type ="ros_opencv_webcam.py" output="screen"/>
+
+	<node name="raw_joy_listener" pkg="leaping_rover" type ="double_joy.py" output="screen"/>
+
+</launch>
