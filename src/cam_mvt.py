@@ -1,10 +1,11 @@
-#cam_mvt.py: subscribes to the joy topic of the joy_node and publishes values to 
-
 #!/usr/bin/env python
 import roslib 
 import rospy
 from geometry_msgs.msg import Twist,Vector3
 from sensor_msgs.msg import Joy
+
+#cam_mvt.py: subscribes to the joy topic of the joy_node and publishes values to 
+
 
 cam_cont = Twist()
 cam_mvtUD = Vector3()
