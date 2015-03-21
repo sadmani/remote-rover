@@ -21,6 +21,7 @@ There are a few different milestones for this project:
   This can be used to control the rover simply with a PS3 joystick
 
 The online-control is currently in progress, but if you'd like to see:
+
 2. Use the launch file above and the type the following command:
 ```
 roslaunch rosbridge_server rosbridge_websocket.launch
