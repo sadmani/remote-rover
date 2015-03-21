@@ -17,13 +17,13 @@ There are a few different milestones for this project:
 3. Connect to the wifi module 'wifi-robots'
 
 ##Sofware:
-1. Use the launch file that is included (rover.launch)
-  This can be used to control the rover simply with a PS3 joystick
+
+Use the launch file that is included (rover.launch)--> This can be used to control the rover simply with a PS3 joystick
 
 The online-control is currently in progress, but if you'd like to see:
 
-2. Use the launch file above and the type the following command:
+Use the launch file above and the type the following command:
 ```
 roslaunch rosbridge_server rosbridge_websocket.launch
 ```
-3. Click on the html file to see the current code that publishes a twist to move the rover
+Click on the html file to see the current code that publishes a twist to move the rover
