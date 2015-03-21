@@ -12,6 +12,7 @@ There are a few different milestones for this project:
 
 #Launching:
 ##Hardware:
+Note: this program is based on the use of the linksprite wifi rover (http://www.linksprite.com/wp-content/uploads/2015/02/rover-assembling-instruction.pdf). After obtaining and building it, procede with the following instructions:
 1. Have your xbees hooked up to the host computer and the rover, configured with a baud rate equal to 57600
 2. Turn the rover on
 3. Connect to the wifi module 'wifi-robots'
