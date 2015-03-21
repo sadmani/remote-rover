@@ -28,3 +28,6 @@ Use the launch file above and the type the following command:
 roslaunch rosbridge_server rosbridge_websocket.launch
 ```
 Click on the html file to see the current code that publishes a twist to move the rover
+
+#Next Steps:
+I am in the process of refining this package as well as moving forward with the development of the robot web tools portion. Stay tuned!!!
