@@ -1,5 +1,7 @@
 <launch>
 
+<!--note: to launch: roslaunch rover.launch stream_topic:=/camera/image_raw repub_topic:=/camera/theora-->
+
  <!-- rosserial node -->
   <node pkg="rosserial_python" type="serial_node.py" name="serial_node" output="screen">
         <param name="~port" value="/dev/ttyACM0" />
@@ -13,9 +15,22 @@
     <param name="deadzone" value="0.12" />
   </node>
 
+ <!-- image view node -->
+  <node name="image_view" pkg="image_view" type="image_view" respawn="false" output="screen">
+    <remap from="image" to="/camera/image_raw"/>
+    <param name="autosize" value="true" />
+  </node>
+
  <!-- rover node -->
-	<node name="rover_eyes" pkg="leaping_rover" type ="ros_opencv_webcam.py" output="screen"/>
+	<node name="rover_eyes" pkg="leaping_rover" type ="ros_opencv_webcamv2.py" output="screen"/>
 
 	<node name="raw_joy_listener" pkg="leaping_rover" type ="double_joy.py" output="screen"/>
+
+<!-- camera control node -->
+  <node name="cam_control_joy" pkg="leaping_rover" type ="cam_mvt.py" output="screen"/>
+
+<!-- image transport node -->
+<node name="image_republisher" pkg="image_transport" type="republish" respawn = "true" args="raw in:=$(arg stream_topic) out:=$(arg repub_topic)"/>
+
 
 </launch>
