@@ -32,11 +32,13 @@ ros::Publisher pubUS("ultrasound", &dist_msg);
 ros::Publisher chatter("move_state", &blah_msg);
 int distance = 53.0;
 
+//Create call back for controlling rover movement
 void moveWheels( const geometry_msgs::Twist&msg){
   float vel_x = msg.linear.x;
   float vel_y = msg.linear.y;
   float ang_z = msg.angular.z;
-  
+   
+  //map data extracted (from 0 to 1) to a PWM value
   float adj_vel_x = 255*vel_x;
   float adj_vel_y = 255*vel_y;
   
@@ -92,6 +94,7 @@ void moveWheels( const geometry_msgs::Twist&msg){
   }
 } 
 
+//Similar callback to above except this listens to robot web tools twist data for rover movement control
 void moveWebWheels( const geometry_msgs::Twist&msg){
   float vel_x = msg.linear.x;
   float vel_y = msg.linear.y;
@@ -154,6 +157,7 @@ void moveWebWheels( const geometry_msgs::Twist&msg){
   prev_vel_y = vel_y;
 }
 
+//Create a callback that moves the camera servos up, down, left, or right
 void servoMove( const geometry_msgs::Twist&msg){
 //  int val = servo1.read();
 //  Serial.print(val);
@@ -220,13 +224,12 @@ void setup(){
 }
 
 void loop(){
+  //ultrasound data publishing
   long duration, distance;
-  digitalWrite(trig_pin, LOW);  // Added this line
-  delayMicroseconds(2); // Added this line
-
+  digitalWrite(trig_pin, LOW);
+  delayMicroseconds(2);
   digitalWrite(trig_pin, HIGH);
-//  delayMicroseconds(1000); - Removed this line
-  delayMicroseconds(10); // Added this line
+  delayMicroseconds(10);
   digitalWrite(trig_pin, LOW);
   duration = pulseIn(echo_pin, HIGH);
   distance = (duration/2) / 29.1;
