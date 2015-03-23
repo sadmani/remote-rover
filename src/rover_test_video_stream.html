@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!-- Note: this version of the code is from Athulya Simon and Jackie Wu's miniproject in ME495 for robot web tools.
+-->
+
+<!--
+The next two lines bring in the JavaScript files that support rosbridge integration.
+-->
+<script type="text/javascript" src="http://cdn.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
+<script type="text/javascript" src="http://cdn.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
+
+<script type="text/javascript" type="text/javascript">
+  // This function connects to the rosbridge server running on the local computer on port 9090
+  var rbServer = new ROSLIB.Ros({
+    url : 'ws://localhost:9090' //this is to use your own computer
+    //url : 'ws://192.168.0.104:9090' //this is for other people to connect to your computer, 192.168.0.104 was found from typing ifconfig into terminal
+  });
+  // This function is called upon the rosbridge connection event
+  rbServer.on('connection', function() {
+    // Write appropriate message to #feedback div when successfully connected to rosbridge
+    var fbDiv = document.getElementById('feedback');
+    fbDiv.innerHTML += "<p>Connected to websocket server.</p>";
+  });
+  // This function is called when there is an error attempting to connect to rosbridge
+  rbServer.on('error', function(error) {
+    // Write appropriate message to #feedback div upon error when attempting to connect to rosbridge
+    var fbDiv = document.getElementById('feedback');
+    fbDiv.innerHTML += "<p>Error connecting to websocket server.</p>";
+  });
+  // This function is called when the connection to rosbridge is closed
+  rbServer.on('close', function() {
+    // Write appropriate message to #feedback div upon closing connection to rosbridge
+    var fbDiv = document.getElementById('feedback');
+    fbDiv.innerHTML += "<p>Connection to websocket server closed.</p>";
+  });
+  
+   //Creating a topic
+  // ----------------- 
+  // These lines create a topic object as defined by roslibjs
+  //topics for turtlesim can be found on http://wiki.ros.org/turtlesim
+  var cmdVelTopic = new ROSLIB.Topic({
+    ros : rbServer, //rbServer comes from ROSLIB.Ros in line 19
+    name : '/webtools_twist', 
+    messageType : 'geometry_msgs/Twist'
+  });
+  // These lines create a message that conforms to the structure of the Twist defined in our ROS installation
+  // It initalizes all properties to zero. They will be set to appropriate values before we publish this message.
+  var twist = new ROSLIB.Message({
+    linear : {
+      x : 0.0,
+      y : 0.0,
+      z : 0.0
+    },
+    angular : {
+      x : 0.0,
+      y : 0.0,
+      z : 0.0
+    }
+  });
+  
+  /* This function:
+	- retrieves numeric values from the text boxes
+	- assigns these values to the appropriate values in the twist message
+	- publishes the message to the cmd_vel topic.
+  */
+  function pubMessage() {
+    /**
+    Set the appropriate values on the twist message object according to values in text boxes
+    It seems that turtlesim only uses the x property of the linear object 
+    and the z property of the angular object
+    **/
+    var linearX = 0.0;
+    var linearY = 0.0;
+    // get values from text input fields. Note for simplicity we are not validating.
+    linearX = 0 + Number(document.getElementById('linearXText').value);
+    linearY = 0 + Number(document.getElementById('linearYText').value);
+    // Set the appropriate values on the message object
+    twist.linear.x = linearX;
+    twist.linear.y = linearY;
+    // Publish the message 
+    cmdVelTopic.publish(twist);
+       
+  };
+  
+  function moveup() {  
+    twist.linear.x = 0.0;
+    twist.linear.y = 1.0;
+    cmdVelTopic.publish(twist);      
+  };
+  function movedown() {  
+    twist.linear.x = 0.0;
+    twist.linear.y = -1.0;
+    cmdVelTopic.publish(twist);      
+  };
+  function turnleft() {  
+    twist.linear.x = 1.0;
+    twist.linear.y = 0.0;
+    cmdVelTopic.publish(twist);      
+  };
+  function turnright() {  
+    twist.linear.x = -1.0;
+    twist.linear.y = 0.0;
+    cmdVelTopic.publish(twist);      
+  };
+  /* This function:
+  - detects when an arrow key is pressed down
+  - calls the appropriate turn/move functions from above to move the turtle
+  */
+  document.onkeydown = function(e) {
+    e = e || window.event;
+    switch(e.which || e.keyCode) {
+        case 37: turnleft()// left
+        break;
+        case 38: moveup()// up
+        break;
+        case 39: turnright()// right
+        break;
+        case 40: movedown()// down
+        break;
+        default: return; // exit this handler for other keys
+    }
+    e.preventDefault(); // prevent the default action (scroll / move caret)
+  };
+</script>
+</head>
+<title>Rover's Eyes Live-Stream</title></head>
+
+<body>
+  <center><h1>Yay!</h1></center>
+    <center>
+  <img src="http://192.168.1.103:8888/stream?topic=/camera/image_theora"/>
+  
+  <!-- <img src="http://192.168.1.103/?action=stream"/>
+-->  
+    <center>
+<body>
+</html>
+
+<p><font size="5">Guide the rover through the course!</font></p>
+
+
+<form name="ctrlPanel">
+<p>Enter a value for moving the turtle below: </p>
+<table>
+    <tr><td>Linear X</td><td><input id="linearXText" name="linearXText" type="text" value="1.5"/></td></tr>
+    <tr><td>Linear Y</td><td><input id="linearYText" name="linearYText" type="text" value="1.5"/></td></tr>
+</table>
+
+<button id="sendMsg" type="button" onclick="pubMessage()">Publish Message</button>
+
+<p> Click arrow keys or use keyboard keys </p>
+
+<style>
+  button.pos_left {
+    position: absolute;
+    left: 20px;
+    top: 400px;
+  }
+  button.pos_right{
+    position: absolute;
+    left: 75px;
+    top: 400px;
+  }
+  button.pos_up{
+    position: absolute;
+    left: 50px;
+    top: 375px;
+  }
+  button.pos_down{
+    position: absolute;
+    left: 50px;
+    top: 400px;
+  }
+  div.Websocket{
+    position: absolute;
+    top: 415px;
+  }
+</style>  
+
+<div>
+<p>
+  <button id="up" type="button" class = "pos_up" onclick="moveup()">&#8593;</button>
+  <button id="left" type="button" class = "pos_left" onclick="turnleft()">&#8592;</button>
+  <button id="down" type="button" class = "pos_down" onclick="movedown()">&#8595;</button>
+  <button id="right" type="button" class = "pos_right" onclick="turnright()">&#8594;</button>
+</p>
+</div>
+
+
+</form>
+<p></p>
+<p></p>
+<div id="feedback" class="Websocket"></div>
+</body>
+</html>
